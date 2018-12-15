@@ -4,22 +4,43 @@ const {
   hashPassword, protect
 } = require('@feathersjs/authentication-local').hooks;
 
+
+const customizeGithubProfile = () => {
+  return (context) => {
+    if (context.params.oauth.provider !== 'github') {
+      return;
+    }
+
+    const {github: {profile, accessToken}} = context.data;
+
+    context.data = {
+      id: context.data.githubId,
+      name: profile.displayName,
+      username: profile.username,
+      profileUrl: profile.profileUrl,
+      photo: profile.photos.pop().value,
+      githubToken: accessToken
+    };
+  };
+};
+
 module.exports = {
   before: {
     all: [],
     find: [ authenticate('jwt') ],
     get: [ authenticate('jwt') ],
-    create: [ hashPassword() ],
-    update: [ hashPassword(),  authenticate('jwt') ],
+    create: [ hashPassword(), customizeGithubProfile() ],
+    update: [ hashPassword(),  authenticate('jwt'), customizeGithubProfile() ],
     patch: [ hashPassword(),  authenticate('jwt') ],
     remove: [ authenticate('jwt') ]
   },
 
   after: {
-    all: [ 
+    all: [
       // Make sure the password field is never sent to the client
       // Always must be the last hook
-      protect('password')
+      protect('password'),
+      protect('accessToken')
     ],
     find: [],
     get: [],
