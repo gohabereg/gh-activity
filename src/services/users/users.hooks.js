@@ -6,21 +6,28 @@ const {
 
 
 const customizeGithubProfile = () => {
-  return (context) => {
+  return async (context) => {
     if (context.params.oauth.provider !== 'github') {
       return;
     }
 
-    const {github: {profile, accessToken}} = context.data;
+    try {
+      const user = await context.app.service('users').get(+context.data.githubId);
 
-    context.data = {
-      id: context.data.githubId,
-      name: profile.displayName,
-      username: profile.username,
-      profileUrl: profile.profileUrl,
-      photo: profile.photos.pop().value,
-      githubToken: accessToken
-    };
+      context.result = user;
+    } catch (e) {
+
+      const {github: {profile, accessToken}} = context.data;
+
+      context.data = {
+        id: +context.data.githubId,
+        name: profile.displayName,
+        username: profile.username,
+        profileUrl: profile.profileUrl,
+        photo: profile.photos.pop().value,
+        githubToken: accessToken
+      };
+    }
   };
 };
 
