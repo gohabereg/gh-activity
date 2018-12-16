@@ -5,13 +5,14 @@
     "mocha": true
   },
   "parserOptions": {
-    "ecmaVersion": 2017
+    "ecmaVersion": 2018
   },
   "extends": "eslint:recommended",
   "rules": {
     "indent": [
       "error",
-      2
+      2,
+      {"SwitchCase": 1}
     ],
     "linebreak-style": [
       "warn",
@@ -24,6 +25,7 @@
     "semi": [
       "error",
       "always"
-    ]
+    ],
+    "no-case-declarations": "off"
   }
 }

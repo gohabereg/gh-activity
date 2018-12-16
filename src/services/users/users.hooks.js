@@ -14,7 +14,7 @@ const customizeGithubProfile = () => {
     const {github: {profile, accessToken}} = context.data;
 
     context.data = {
-      id: context.data.githubId,
+      id: +context.data.githubId,
       name: profile.displayName,
       username: profile.username,
       profileUrl: profile.profileUrl,
