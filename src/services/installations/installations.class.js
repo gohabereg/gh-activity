@@ -16,7 +16,7 @@ class Service {
   async get (username) {
     const githubApp = this.app.get('githubApp');
 
-    const keyPath = path.resolve(__dirname, '../../../key.pem');
+    const keyPath = path.resolve(__dirname, '../../../', githubApp.keyFile);
     const key = fs.readFileSync(keyPath);
     const now = Math.round(Date.now() / 1000)
     const token = JWT.sign({

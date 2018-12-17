@@ -113,3 +113,10 @@ data/
 
 # IDE files
 .idea
+
+# Environment variables
+.env*
+!.env.example
+
+# Pem sertificate
+*.pem
