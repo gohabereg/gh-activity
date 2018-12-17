@@ -13,11 +13,22 @@ module.exports = function(app) {
     if(connection) {
       app.channel('anonymous').leave(connection);
 
-      app.channel(`user/${connection.user.installation}`).join(connection);
+      app.channel(`user/${connection.user.id}`).join(connection);
+      app.channel(`app/${connection.user.installation}`).join(connection);
     }
   });
 
+  app.service('users').publish((data) => {
+    return app.channel(`user/${data.id}`);
+  })
+
   app.service('notifications').publish('created', (data) => {
-    return app.channel(`user/${data.installation}`);
+    const user = app.channel(app.channels).filter(connection => {
+      return connection.user.installation === data.installation
+    });
+
+    app.channel(`app/${data.installation}`).join(user);
+
+    return app.channel(`app/${data.installation}`);
   });
 };

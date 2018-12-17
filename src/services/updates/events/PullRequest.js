@@ -213,8 +213,7 @@ class PullRequestEvent {
           label: {
             value: this.label.name,
             url: this.label.url,
-            background: this.label.color,
-            color: '#fff'
+            background: `#${this.label.color}`,
           },
           pr: {
             value: this.pr.title,
@@ -233,8 +232,7 @@ class PullRequestEvent {
           label: {
             value: this.label.name,
             url: this.label.url,
-            background: this.label.color,
-            color: '#fff'
+            background: `#${this.label.color}`,
           },
           pr: {
             value: this.pr.title,

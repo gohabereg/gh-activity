@@ -11,25 +11,39 @@ const customizeGithubProfile = () => {
       return;
     }
 
+    const {github: {profile, accessToken}} = context.data;
+
+    const data = {
+      name: profile.displayName,
+      username: profile.username,
+      profileUrl: profile.profileUrl,
+      photo: profile.photos.pop().value,
+      githubToken: accessToken
+    }
+    const id = +context.data.githubId;
+
     try {
-      const user = await context.app.service('users').get(+context.data.githubId);
+      const user = await context.app.service('users').patch(id, data);
 
       context.result = user;
     } catch (e) {
-
-      const {github: {profile, accessToken}} = context.data;
-
       context.data = {
         id: +context.data.githubId,
-        name: profile.displayName,
-        username: profile.username,
-        profileUrl: profile.profileUrl,
-        photo: profile.photos.pop().value,
-        githubToken: accessToken
+        ...data
       };
     }
   };
 };
+
+const getUserInstallation = (context) => {
+    context.app.service('installations').get(context.result.username)
+      .then((installation) => {
+        context.app.service('users').patch(context.result.id, {installation: installation.id});
+      })
+      .catch(() => {
+        console.log('User hasn\'t installed the app');
+      });
+}
 
 module.exports = {
   before: {
@@ -50,8 +64,8 @@ module.exports = {
       protect('githubToken')
     ],
     find: [],
-    get: [],
-    create: [],
+    get: [getUserInstallation],
+    create: [getUserInstallation],
     update: [],
     patch: [],
     remove: []

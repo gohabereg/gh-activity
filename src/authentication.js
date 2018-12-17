@@ -30,7 +30,8 @@ module.exports = function (app) {
   app.configure(oauth2(Object.assign({
     name: 'github',
     Strategy: GithubStrategy,
-    handler
+    handler,
+    scope: ['user']
   }, config.github)));
 
   // The `authentication` service is used to create a JWT.

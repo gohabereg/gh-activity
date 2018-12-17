@@ -35,5 +35,9 @@
       "secure": false
     }
   },
+  "githubApp": {
+    "id": 22361,
+    "name": "Activity-Notifications-App"
+  },
   "nedb": "../data"
 }
