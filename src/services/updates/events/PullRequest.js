@@ -48,7 +48,10 @@ class PullRequestEvent {
   }
 
   getMessage () {
-    let notification;
+    let notification = {
+      title: this.pr.title,
+      url: this.pr.url
+    };
 
     switch (this.action) {
       case ACTIONS.opened:
@@ -70,7 +73,8 @@ class PullRequestEvent {
             value: this.pr.base.ref,
             mono: true
           },
-          message: '[user] opened pull request «[pr]» from [head] to [base]'
+          message: '[user] opened pull request «[pr]» from [head] to [base]',
+          ...notification
         };
 
       case ACTIONS.reopened:
@@ -92,7 +96,8 @@ class PullRequestEvent {
             value: this.pr.base.red,
             mono: true
           },
-          message: '[user] reopened pull request «[pr]» from [head] to [base]'
+          message: '[user] reopened pull request «[pr]» from [head] to [base]',
+          ...notification
         };
 
       case ACTIONS.edited:
@@ -101,7 +106,8 @@ class PullRequestEvent {
           user: {
             value: this.sender.login,
             url: this.sender.url
-          }
+          },
+          ...notification
         };
 
         if (this.changes.title) {
@@ -136,7 +142,8 @@ class PullRequestEvent {
           pr: {
             value: this.pr.title,
             url: this.pr.url
-          }
+          },
+          ...notification
         };
 
         if (!this.pr.merged) {
@@ -182,7 +189,8 @@ class PullRequestEvent {
             value: this.sender.login,
             url: this.sender.url
           },
-          message: '[assignee] has been assigned to the «[pr]» pull request by [sender]'
+          message: '[assignee] has been assigned to the «[pr]» pull request by [sender]',
+          ...notification
         };
 
       case ACTIONS.unassigned:
@@ -200,7 +208,8 @@ class PullRequestEvent {
             value: this.sender.login,
             url: this.sender.url
           },
-          message: '[assignee] has been unassigned from the «[pr]» pull request by [sender]'
+          message: '[assignee] has been unassigned from the «[pr]» pull request by [sender]',
+          ...notification
         };
 
       case ACTIONS.labeled:
@@ -219,7 +228,8 @@ class PullRequestEvent {
             value: this.pr.title,
             url: this.pr.url
           },
-          message: '[user] added [label] label to the «[pr]» pull request'
+          message: '[user] added [label] label to the «[pr]» pull request',
+          ...notification
         };
 
       case ACTIONS.unlabeled:
@@ -238,7 +248,8 @@ class PullRequestEvent {
             value: this.pr.title,
             url: this.pr.url
           },
-          message: '[user] removed [label] label from the «[pr]» pull request'
+          message: '[user] removed [label] label from the «[pr]» pull request',
+          ...notification
         };
 
       case ACTIONS.reviewRequested:
@@ -256,7 +267,8 @@ class PullRequestEvent {
             value: this.pr.title,
             url: this.pr.url
           },
-          message: '[user] requested [reviewer]`s review for the «[pr]» pull request'
+          message: '[user] requested [reviewer]`s review for the «[pr]» pull request',
+          ...notification
         };
 
       case ACTIONS.reviewRequestRemoved:
@@ -274,7 +286,8 @@ class PullRequestEvent {
             value: this.pr.title,
             url: this.pr.url
           },
-          message: '[user] removed request for [reviewer]`s review from the «[pr]» pull request'
+          message: '[user] removed request for [reviewer]`s review from the «[pr]» pull request',
+          ...notification
         };
 
       case ACTIONS.synchronize:
@@ -286,7 +299,8 @@ class PullRequestEvent {
             value: this.pr.title,
             url: this.pr.url
           },
-          message: 'Update in «[pr]» pull request'
+          message: 'Update in «[pr]» pull request',
+          ...notification
         };
     }
   }

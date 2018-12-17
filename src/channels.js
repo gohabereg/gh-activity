@@ -24,7 +24,7 @@ module.exports = function(app) {
 
   app.service('notifications').publish('created', (data) => {
     const user = app.channel(app.channels).filter(connection => {
-      return connection.user.installation === data.installation
+      return connection.user && connection.user.installation === data.installation
     });
 
     app.channel(`app/${data.installation}`).join(user);
