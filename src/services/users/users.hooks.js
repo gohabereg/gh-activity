@@ -19,7 +19,7 @@ const customizeGithubProfile = () => {
       profileUrl: profile.profileUrl,
       photo: profile.photos.pop().value,
       githubToken: accessToken
-    }
+    };
     const id = +context.data.githubId;
 
     try {
@@ -36,14 +36,14 @@ const customizeGithubProfile = () => {
 };
 
 const getUserInstallation = (context) => {
-    context.app.service('installations').get(context.result.username)
-      .then((installation) => {
-        context.app.service('users').patch(context.result.id, {installation: installation.id});
-      })
-      .catch(() => {
-        console.log('User hasn\'t installed the app');
-      });
-}
+  context.app.service('installations').get(context.result.username)
+    .then((installation) => {
+      context.app.service('users').patch(context.result.id, {installation: installation.id});
+    })
+    .catch(() => {
+      context.app.service('users').patch(context.result.id, {installation: undefined});
+    });
+};
 
 module.exports = {
   before: {

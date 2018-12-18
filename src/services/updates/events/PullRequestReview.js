@@ -36,14 +36,15 @@ class PullRequestReviewEvent {
   getMessage() {
     let notification = {
       title: `${this.pr.title} has been reviewed`,
-      url: this.review.url
+      url: this.review.url,
+      event: PullRequestReviewEvent.EVENT,
+      type: this.action
     };
 
     let message = '';
 
     switch (this.action) {
       case ACTIONS.submitted:
-
         switch (this.review.state) {
           case STATES.approved:
             message = '[user] approved review in pull request «[pr]»';
@@ -55,6 +56,7 @@ class PullRequestReviewEvent {
             message = '[user] commented review in pull request «[pr]»';
             break;
         }
+
         return {
           icon: this.review.user.avatar,
           user: {

@@ -50,21 +50,24 @@ class PullRequestEvent {
   getMessage () {
     let notification = {
       title: this.pr.title,
-      url: this.pr.url
+      url: this.pr.url,
+      icon: this.sender.avatar,
+      event: PullRequestEvent.EVENT,
+      type: this.action,
+      user: {
+        value: this.sender.login,
+        url: this.sender.url,
+      },
+      pr: {
+        value: this.pr.title,
+        url: this.pr.url
+      }
     };
 
     switch (this.action) {
       case ACTIONS.opened:
         return {
-          icon: this.sender.avatar,
-          user: {
-            value: this.sender.login,
-            url: this.sender.url,
-          },
-          pr: {
-            value: this.pr.title,
-            url: this.pr.url
-          },
+          ...notification,
           head: {
             value: this.pr.head.ref,
             mono: true
@@ -73,21 +76,12 @@ class PullRequestEvent {
             value: this.pr.base.ref,
             mono: true
           },
-          message: '[user] opened pull request «[pr]» from [head] to [base]',
-          ...notification
+          message: '[user] opened pull request «[pr]» from [head] to [base]'
         };
 
       case ACTIONS.reopened:
         return {
-          icon: this.sender.avatar,
-          user: {
-            value: this.sender.login,
-            url: this.sender.url
-          },
-          pr: {
-            value: this.pr.title,
-            url: this.pr.url
-          },
+          ...notification,
           head: {
             value: this.pr.head.ref,
             mono: true
@@ -96,17 +90,11 @@ class PullRequestEvent {
             value: this.pr.base.red,
             mono: true
           },
-          message: '[user] reopened pull request «[pr]» from [head] to [base]',
-          ...notification
+          message: '[user] reopened pull request «[pr]» from [head] to [base]'
         };
 
       case ACTIONS.edited:
         notification = {
-          icon: this.sender.avatar,
-          user: {
-            value: this.sender.login,
-            url: this.sender.url
-          },
           ...notification
         };
 
@@ -115,10 +103,10 @@ class PullRequestEvent {
             value: this.changes.title.from,
             url: this.pr.url
           };
-          notification.title = {
+          notification.changes = {
             value: this.pr.title
           };
-          notification.message = '[user] renamed pull request «[pr]» to «[title]»';
+          notification.message = '[user] renamed pull request «[pr]» to «[changes]»';
         } else if (this.changes.body) {
           notification.pr = {
             value: this.pr.title,
@@ -139,20 +127,10 @@ class PullRequestEvent {
 
       case ACTIONS.closed:
         notification = {
-          pr: {
-            value: this.pr.title,
-            url: this.pr.url
-          },
           ...notification
         };
 
         if (!this.pr.merged) {
-          notification.icon = this.sender.avatar;
-          notification.user = {
-            value: this.sender.login,
-            url: this.sender.url
-          };
-
           notification.message = '[user] closed pull request «[pr]»';
         } else {
           notification.icon = this.pr.mergedBy.avatar;
@@ -176,118 +154,75 @@ class PullRequestEvent {
 
       case ACTIONS.assigned:
         return {
+          ...notification,
           icon: this.assignee.avatar,
           assignee: {
             value: this.assignee.login,
             url: this.assignee.url
           },
-          pr: {
-            value: this.pr.title,
-            url: this.pr.url
-          },
           sender: {
             value: this.sender.login,
             url: this.sender.url
           },
-          message: '[assignee] has been assigned to the «[pr]» pull request by [sender]',
-          ...notification
+          message: '[assignee] has been assigned to the «[pr]» pull request by [sender]'
         };
 
       case ACTIONS.unassigned:
         return {
+          ...notification,
           icon: this.assignee.avatar,
           assignee: {
             value: this.assignee.login,
             url: this.assignee.url
           },
-          pr: {
-            value: this.pr.title,
-            url: this.pr.url
-          },
           sender: {
             value: this.sender.login,
             url: this.sender.url
           },
-          message: '[assignee] has been unassigned from the «[pr]» pull request by [sender]',
-          ...notification
+          message: '[assignee] has been unassigned from the «[pr]» pull request by [sender]'
         };
 
       case ACTIONS.labeled:
         return {
-          icon: this.sender.avatar,
-          user: {
-            value: this.sender.login,
-            url: this.sender.url
-          },
+          ...notification,
           label: {
             value: this.label.name,
             url: this.label.url,
             background: `#${this.label.color}`,
           },
-          pr: {
-            value: this.pr.title,
-            url: this.pr.url
-          },
-          message: '[user] added [label] label to the «[pr]» pull request',
-          ...notification
+          message: '[user] added [label] label to the «[pr]» pull request'
         };
 
       case ACTIONS.unlabeled:
         return {
-          icon: this.sender.avatar,
-          user: {
-            value: this.sender.login,
-            url: this.sender.url
-          },
+          ...notification,
           label: {
             value: this.label.name,
             url: this.label.url,
             background: `#${this.label.color}`,
           },
-          pr: {
-            value: this.pr.title,
-            url: this.pr.url
-          },
-          message: '[user] removed [label] label from the «[pr]» pull request',
-          ...notification
+          message: '[user] removed [label] label from the «[pr]» pull request'
         };
 
       case ACTIONS.reviewRequested:
         return {
+          ...notification,
           icon: this.reviewer.avatar,
-          user: {
-            value: this.sender.login,
-            url: this.sender.url
-          },
           reviewer: {
             value: this.reviewer.login,
             url: this.reviewer.url
           },
-          pr: {
-            value: this.pr.title,
-            url: this.pr.url
-          },
           message: '[user] requested [reviewer]`s review for the «[pr]» pull request',
-          ...notification
         };
 
       case ACTIONS.reviewRequestRemoved:
         return {
-          icon: this.sender.avatar,
-          user: {
-            value: this.sender.login,
-            url: this.sender.url
-          },
+          ...notification,
           reviewer: {
             value: this.reviewer.login,
             url: this.reviewer.url
           },
-          pr: {
-            value: this.pr.title,
-            url: this.pr.url
-          },
-          message: '[user] removed request for [reviewer]`s review from the «[pr]» pull request',
-          ...notification
+          message: '[user] removed request for [reviewer]`s review from the «[pr]» pull request'
         };
 
       case ACTIONS.synchronize:
