@@ -47,13 +47,13 @@ class PullRequestReviewEvent {
       case ACTIONS.submitted:
         switch (this.review.state) {
           case STATES.approved:
-            message = '[user] approved review in pull request «[pr]»';
+            message = '[user] approved «[pr]» pull request';
             break;
           case STATES.changes_requested:
-            message = '[user] requested changes for review in pull request «[pr]»';
+            message = '[user] requested changes in «[pr]» pull request';
             break;
           case STATES.commented:
-            message = '[user] commented review in pull request «[pr]»';
+            message = '[user] commented in «[pr]» pull request';
             break;
         }
 

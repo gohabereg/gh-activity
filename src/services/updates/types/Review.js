@@ -12,4 +12,4 @@ class Review {
 }
 
 module.exports = Review;
-module.exports.User = Review;
+module.exports.Review = Review;
