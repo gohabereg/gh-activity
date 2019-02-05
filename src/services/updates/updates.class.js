@@ -45,14 +45,18 @@ class Service {
     const event = new Event(data);
 
     if (type === 'installation') {
-      switch (event.action) {
-        case 'created':
-          this.app.service('users').patch(event.installation.targetId, {installation: event.installation.id});
-          break;
+      try {
+        switch (event.action) {
+          case 'created':
+            this.app.service('users').patch(event.installation.targetId, {installation: event.installation.id});
+            break;
 
-        case 'deleted':
-          this.app.service('users').patch(event.installation.targetId, {installation: undefined});
-          break;
+          case 'deleted':
+            this.app.service('users').patch(event.installation.targetId, {installation: undefined});
+            break;
+        }
+      } catch (e) {
+        console.log('no user for installation');
       }
       return;
     }

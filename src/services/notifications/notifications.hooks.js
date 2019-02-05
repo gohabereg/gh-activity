@@ -8,12 +8,19 @@ module.exports = {
       authenticate('jwt'),
     ],
     find: [
-      restrictToOwner({idField: 'installation', ownerField: 'installation'})
+      restrictToOwner({idField: 'installation', ownerField: 'installation'}),
+      context => {
+        context.params.query = {$sort: {date: -1}};
+      }
     ],
     get: [
       restrictToOwner({idField: 'installation', ownerField: 'installation'})
     ],
-    create: [],
+    create: [
+      context => {
+        context.data.date = new Date();
+      }
+    ],
     update: [
       restrictToOwner({idField: 'installation', ownerField: 'installation'})
     ],
